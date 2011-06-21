@@ -57,7 +57,13 @@ module Garb
 
     def parse_filters(options)
       filters = FilterParameters.new
-      filters.parameters << options[:filters] if options.has_key?(:filters)
+      if options.has_key?(:filters)
+        if options[:filters].class == Hash # It's a hash implying an AND between multiple filters
+          filters.parameters << options[:filters] 
+        elsif options[:filters].class == Array # Assume it's an array of hashes implying an OR between multiple filters
+          filters.parameters = options[:filters]
+        end
+      end
       filters
     end
 
